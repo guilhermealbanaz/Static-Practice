@@ -1,57 +1,100 @@
-import { useState } from 'react';
 import './Form.css';
-import { InputText } from '../InputText/InputText.js';
-import { InputDropDown } from '../InputDropDown/InputDropDown';
+import { DynamicInput } from '../DynamicInput/DynamicInput.js';
 import { SubmitButton } from '../SubmitButton/SubmitButton';
+import { useForm } from '../../hooks/useForm';
 
 export const Form = props => {
-	const { newCard, teams } = props;
-	const [currentName, setCurrentName] = useState('');
-	const [currentTeam, setCurrentTeam] = useState('');
-	const [currentImg, setCurrentImg] = useState('');
-	const [currentStack, setCurrentStack] = useState('');
-
-	const handleSendForm = e => {
-		e.preventDefault();
-		newCard({
-			name: currentName,
-			stack: currentStack,
-			img: currentImg,
-			team: currentTeam
-		});
-	}
+    const { teams } = props;
+    const {
+        currentName,
+        setCurrentName,
+        currentStack,
+        setCurrentStack,
+        currentImg,
+        setCurrentImg,
+        currentTeam,
+        setCurrentTeam,
+        teamName,
+        setTeamName,
+        primaryColorTeam,
+        setPrimaryColorTeam,
+        secondColorTeam,
+        setSecondColorTeam,
+        createCard,
+        createTeam,
+		removeTeam,
+		currentTeamDelete,
+		setCurrentTeamDelete
+    } = useForm(props);
 
 	return (
-		<section className='form'>
-			<form onSubmit={handleSendForm}>
+		<section className='form-container'>
+			<form className='form' onSubmit={createCard}>
 				<h2>Preencha o formulário abaixo:</h2>
-				<InputText
+				<DynamicInput
 				isRequired={true}
 				title="Nome"
 				value={currentName}
-				onChange={currentName => setCurrentName(currentName)}
+				onChange={setCurrentName}
 				/>
-				<InputText
+				<DynamicInput
 				isRequired={true}
 				title="Cargo"
 				value={currentStack}
-				onChange={currentStack => setCurrentStack(currentStack)}
+				onChange={setCurrentStack}
 				/>
-				<InputText
-				isRequired={true}
+				<DynamicInput
 				title="Imagem"
 				value={currentImg}
-				onChange={currentImg => setCurrentImg(currentImg)}
+				onChange={setCurrentImg}
 				/>
-				<InputDropDown
+				<DynamicInput
+				type='dropdown'
 				isRequired={true}
 				title="Time"
 				teams={teams}
 				value={currentTeam}
-				onChange={currentTeam => setCurrentTeam(currentTeam)}
+				onChange={setCurrentTeam}
 				/>
 				<SubmitButton text="Criar Card" />
 			</form>
+			<form className='form' onSubmit={createTeam}>
+                <h2>Preencha os dados para criar um novo time:</h2>
+                <DynamicInput
+				isRequired={true}
+				title="Nome do Time"
+				value={teamName}
+				onChange={setTeamName}
+				/>
+				<DynamicInput
+				type='color'
+				isRequired={true}
+				title="Cor primária"
+				value={primaryColorTeam}
+				onChange={setPrimaryColorTeam}
+				/>
+				<DynamicInput
+				type='color'
+				isRequired={true}
+				title="Cor secundária"
+				value={secondColorTeam}
+				onChange={setSecondColorTeam}
+				/>
+                <SubmitButton text='Criar Time' />
+            </form>
+			<form className='form' onSubmit={removeTeam}>
+                <h2>Selecione um time para ser excluído:</h2>
+                <DynamicInput
+				type='dropdown'
+				isRequired={true}
+				title="Time"
+				teams={teams}
+				value={currentTeamDelete}
+				onChange={setCurrentTeamDelete}
+				/>
+                <SubmitButton text='Deletar Time' />
+            </form>
 		</section>
-	)
+    )
 }
+
